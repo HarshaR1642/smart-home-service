@@ -26,11 +26,11 @@ public class LoginResponseModel implements Parcelable {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             success = in.readBoolean();
         }
-        if(success) {
+        if (success) {
             access_token = in.readString();
             id_token = in.readString();
             refresh_token = in.readString();
-        }else{
+        } else {
             message = in.readString();
         }
     }
@@ -40,11 +40,11 @@ public class LoginResponseModel implements Parcelable {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             dest.writeBoolean(success);
         }
-        if(success) {
+        if (success) {
             dest.writeString(access_token);
             dest.writeString(id_token);
             dest.writeString(refresh_token);
-        }else{
+        } else {
             dest.writeString(message);
         }
     }

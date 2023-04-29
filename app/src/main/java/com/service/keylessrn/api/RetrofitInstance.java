@@ -10,8 +10,8 @@ public class RetrofitInstance {
 
     private static Retrofit retrofitInstance = null;
 
-    public static ApiInterface getRetrofitInstance(){
-        if(retrofitInstance == null){
+    public static ApiInterface getRetrofitInstance() {
+        if (retrofitInstance == null) {
             retrofitInstance = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -21,8 +21,8 @@ public class RetrofitInstance {
         return retrofitInstance.create(ApiInterface.class);
     }
 
-    public static ApiInterface getRetrofitLoginInstance(){
-        if(retrofitInstance == null){
+    public static ApiInterface getRetrofitLoginInstance() {
+        if (retrofitInstance == null) {
             retrofitInstance = new Retrofit.Builder()
                     .baseUrl(AUTH_URL)
                     .addConverterFactory(GsonConverterFactory.create())
