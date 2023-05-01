@@ -1,9 +1,6 @@
-package com.service.keylessrn;
+package com.service.keylessrn.service;
 
 import android.app.Service;
-import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -12,6 +9,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.service.keylessrn.utility.Constants;
+import com.service.keylessrn.ResponseCallback;
+import com.service.keylessrn.V5AidlInterface;
 import com.service.keylessrn.api.ApiInterface;
 import com.service.keylessrn.api.RetrofitInstance;
 import com.service.keylessrn.model.LoginModel;
@@ -21,7 +21,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SmartHomeService extends Service {
+public class ClientService extends Service {
 
     @Override
     public void onCreate() {

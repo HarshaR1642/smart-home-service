@@ -23,18 +23,21 @@
         android:theme="@style/Theme.Service"
         tools:targetApi="31">
 
+        <service
+            android:name=".service.BackgroundService"
+            android:enabled="true"
+            android:exported="true"/>
+
         <receiver
+            android:name=".receiver.Receiver"
             android:directBootAware="true"
-            android:name=".Receiver"
             android:enabled="true"
             android:exported="true">
-
             <intent-filter android:priority="999">
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
-
             <intent-filter android:priority="999">
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -42,21 +45,12 @@
             </intent-filter>
 
             <intent-filter>
-                <action android:name="android.intent.action.PACKAGE_REPLACED" />
-                <action android:name="android.intent.action.PACKAGE_ADDED" />
-
-                <data android:scheme="package" />
-            </intent-filter>
-
-            <intent-filter>
                 <action android:name="android.intent.action.ENABLE_LOCK_MODE" />
                 <action android:name="android.intent.action.DISABLE_LOCK_MODE" />
             </intent-filter>
-
         </receiver>
-
         <receiver
-            android:name=".SmartHomeDeviceAdminReceiver"
+            android:name=".receiver.DeviceAdminReceiver"
             android:exported="true"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
@@ -70,9 +64,14 @@
         </receiver>
 
         <service
-            android:name=".SmartHomeService"
+            android:name=".service.ServiceJobScheduler"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name=".service.ClientService"
             android:enabled="true"
             android:exported="true" />
+
     </application>
 
 </manifest>
