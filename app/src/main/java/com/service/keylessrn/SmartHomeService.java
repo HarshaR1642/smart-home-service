@@ -1,10 +1,14 @@
 package com.service.keylessrn;
 
 import android.app.Service;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -43,8 +47,9 @@ public class SmartHomeService extends Service {
             call.enqueue(new Callback<LoginResponseModel>() {
                 @Override
                 public void onResponse(@NonNull Call<LoginResponseModel> call, @NonNull Response<LoginResponseModel> response) {
+                    Log.i(Constants.TAG, "Login Success");
 
-                    if(response.body() != null){
+                    if (response.body() != null) {
                         try {
                             callback.onResponse(response.body());
                         } catch (RemoteException e) {
@@ -55,6 +60,8 @@ public class SmartHomeService extends Service {
 
                 @Override
                 public void onFailure(@NonNull Call<LoginResponseModel> call, @NonNull Throwable t) {
+                    Log.e(Constants.TAG, "Login Failed");
+                    t.printStackTrace();
                 }
             });
         }
