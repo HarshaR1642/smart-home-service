@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-smarthomeservice-dev-30149-authRole",
+      "UnauthRoleArn": "arn:aws:iam::052903630352:role/amplify-smarthomeservice-dev-30149-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::052903630352:role/amplify-smarthomeservice-dev-30149-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-smarthomeservice-dev-30149-deployment",
+      "UnauthRoleName": "amplify-smarthomeservice-dev-30149-unauthRole",
+      "StackName": "amplify-smarthomeservice-dev-30149",
+      "StackId": "arn:aws:cloudformation:us-east-1:052903630352:stack/amplify-smarthomeservice-dev-30149/421f74e0-eb8c-11ed-929a-0e9fd968da73",
+      "AmplifyAppId": "d3l6n1lh1opnph"
+    },
+    "categories": {
+      "auth": {
+        "smarthomeserviceed54d906": {}
+      },
+      "storage": {
+        "bucket": {}
+      }
+    }
+  }
+}
