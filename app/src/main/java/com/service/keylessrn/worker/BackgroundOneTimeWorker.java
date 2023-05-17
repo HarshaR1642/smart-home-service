@@ -29,7 +29,7 @@ public class BackgroundOneTimeWorker extends Worker {
 
         getApplicationContext().registerReceiver(receiver, filter);
 
-        Log.i(Constants.TAG, "Receiver registered successfully!!");
+        Log.i(Constants.TAG, "One time request success!!");
 
         return Result.success();
     }

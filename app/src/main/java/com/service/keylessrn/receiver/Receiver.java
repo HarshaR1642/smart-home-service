@@ -24,21 +24,24 @@ import java.util.concurrent.TimeUnit;
 
 public class Receiver extends BroadcastReceiver {
 
+    Context context;
+
     @Override
     public void onReceive(Context context, Intent intent) {
+        this.context = context;
         String action = intent.getAction();
         Log.i(Constants.TAG, "Broadcast Received " + action);
         switch (action) {
             case Constants.ACTION_ENABLE_LOCK_MODE:
                 try {
-                    DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+                    DevicePolicyManager dpm = (DevicePolicyManager) this.context.getSystemService(Context.DEVICE_POLICY_SERVICE);
 
-                    if (dpm.isDeviceOwnerApp(context.getPackageName())) {
-                        ComponentName admin = new ComponentName(context, DeviceAdminReceiver.class);
+                    if (dpm.isDeviceOwnerApp(this.context.getPackageName())) {
+                        ComponentName admin = new ComponentName(this.context, DeviceAdminReceiver.class);
                         dpm.setLockTaskPackages(admin, new String[]{Constants.CLIENT_APP_PACKAGE});
                         Intent successIntent = new Intent(Constants.ACTION_ENABLE_LOCK_MODE_SUCCESS);
                         successIntent.setComponent(new ComponentName(Constants.CLIENT_APP_PACKAGE, Constants.CLIENT_APP_RECEIVER_CLASS));
-                        context.sendBroadcast(successIntent);
+                        this.context.sendBroadcast(successIntent);
                     } else {
                         Log.i(Constants.TAG, "App is not an owner");
                     }
@@ -49,10 +52,10 @@ public class Receiver extends BroadcastReceiver {
                 break;
             case Constants.ACTION_DISABLE_LOCK_MODE:
                 try {
-                    DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-                    if (dpm.isDeviceOwnerApp(context.getPackageName())) {
-                        dpm.clearDeviceOwnerApp(context.getPackageName());
-                        ComponentName admin = new ComponentName(context.getApplicationContext(), DeviceAdminReceiver.class);
+                    DevicePolicyManager dpm = (DevicePolicyManager) this.context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+                    if (dpm.isDeviceOwnerApp(this.context.getPackageName())) {
+                        dpm.clearDeviceOwnerApp(this.context.getPackageName());
+                        ComponentName admin = new ComponentName(this.context.getApplicationContext(), DeviceAdminReceiver.class);
                         dpm.removeActiveAdmin(admin);
                         Log.i(Constants.TAG, "Removed as device owner");
                     } else {
@@ -70,15 +73,12 @@ public class Receiver extends BroadcastReceiver {
                 Log.i(Constants.TAG, packageName);
                 if (packageName.equals(Constants.CLIENT_APP_PACKAGE)) {
                     try {
-                        DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+                        DevicePolicyManager dpm = (DevicePolicyManager) this.context.getSystemService(Context.DEVICE_POLICY_SERVICE);
 
-                        if (dpm.isDeviceOwnerApp(context.getPackageName())) {
-                            ComponentName admin = new ComponentName(context, DeviceAdminReceiver.class);
+                        if (dpm.isDeviceOwnerApp(this.context.getPackageName())) {
+                            ComponentName admin = new ComponentName(this.context, DeviceAdminReceiver.class);
                             dpm.setLockTaskPackages(admin, new String[]{Constants.CLIENT_APP_PACKAGE});
-                            Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(Constants.CLIENT_APP_PACKAGE);
-                            if (launchIntent != null) {
-                                context.startActivity(launchIntent);
-                            }
+                            launchClientApp();
                         } else {
                             Log.i(Constants.TAG, "App is not an owner");
                         }
@@ -88,21 +88,31 @@ public class Receiver extends BroadcastReceiver {
                     }
                 }
                 break;
+            case Constants.ACTION_LAUNCH_CLIENT_APP:
+                launchClientApp();
+                break;
             case Intent.ACTION_BOOT_COMPLETED:
             case Intent.ACTION_LOCKED_BOOT_COMPLETED:
-                Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(Constants.CLIENT_APP_PACKAGE);
-                if (launchIntent != null) {
-                    context.startActivity(launchIntent);
-                }
-                startBackgroundOneTimeWorker(context);
-                startBackgroundPeriodicWorker(context);
+                launchClientApp();
+                startBackgroundOneTimeWorker();
+                startBackgroundPeriodicWorker();
                 break;
         }
     }
 
-    private void startBackgroundOneTimeWorker(Context context) {
-        String workTag = context.getPackageName() + ".onetime";
-        boolean isRunning = checkWorkStatus(context, workTag);
+    private void launchClientApp(){
+        Intent launchIntent = this.context.getPackageManager().getLaunchIntentForPackage(Constants.CLIENT_APP_PACKAGE);
+        if(launchIntent == null){
+            Log.i(Constants.TAG, "App not installed, cannot launch app");
+        }
+        if (launchIntent != null) {
+            this.context.startActivity(launchIntent);
+        }
+    }
+
+    private void startBackgroundOneTimeWorker() {
+        String workTag = this.context.getPackageName() + ".onetime";
+        boolean isRunning = checkWorkStatus(workTag);
         if (isRunning) {
             return;
         }
@@ -110,12 +120,12 @@ public class Receiver extends BroadcastReceiver {
                 new OneTimeWorkRequest.Builder(BackgroundOneTimeWorker.class)
                         .build();
 
-        WorkManager.getInstance(context).enqueueUniqueWork(workTag, ExistingWorkPolicy.KEEP, workRequest);
+        WorkManager.getInstance(this.context).enqueueUniqueWork(workTag, ExistingWorkPolicy.KEEP, workRequest);
     }
 
-    private void startBackgroundPeriodicWorker(Context context) {
-        String workTag = context.getPackageName() + ".periodic";
-        boolean isRunning = checkWorkStatus(context, workTag);
+    private void startBackgroundPeriodicWorker() {
+        String workTag = this.context.getPackageName() + ".periodic";
+        boolean isRunning = checkWorkStatus(workTag);
         if (isRunning) {
             return;
         }
@@ -123,11 +133,11 @@ public class Receiver extends BroadcastReceiver {
                 new PeriodicWorkRequest.Builder(BackgroundPeriodicWorker.class, 15, TimeUnit.MINUTES);
         PeriodicWorkRequest workRequest = workRequestBuilder.addTag(workTag).build();
 
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(workTag, ExistingPeriodicWorkPolicy.KEEP, workRequest);
+        WorkManager.getInstance(this.context).enqueueUniquePeriodicWork(workTag, ExistingPeriodicWorkPolicy.KEEP, workRequest);
     }
 
-    private boolean checkWorkStatus(Context context, String tag) {
-        WorkManager workManager = WorkManager.getInstance(context);
+    private boolean checkWorkStatus(String tag) {
+        WorkManager workManager = WorkManager.getInstance(this.context);
 
         ListenableFuture<List<WorkInfo>> statuses = workManager.getWorkInfosByTag(tag);
         try {

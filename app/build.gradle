@@ -23,6 +23,21 @@ android {
         }
     }
 
+    signingConfigs {
+        debug {
+            storeFile file('aw_system.jks')
+            storePassword '123456'
+            keyAlias 'aw_systemkey0'
+            keyPassword '123456'
+        }
+        release {
+            storeFile file('aw_system.jks')
+            storePassword '123456'
+            keyAlias 'aw_systemkey0'
+            keyPassword '123456'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
