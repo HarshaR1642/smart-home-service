@@ -1,6 +1,6 @@
 export type AmplifyDependentResourcesAttributes = {
   "auth": {
-    "smarthomeserviceed54d906": {
+    "smarthomeservice19b70bb6": {
       "AppClientID": "string",
       "AppClientIDWeb": "string",
       "IdentityPoolId": "string",
@@ -11,7 +11,7 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "storage": {
-    "bucket": {
+    "smarthomeservice": {
       "BucketName": "string",
       "Region": "string"
     }

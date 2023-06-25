@@ -1,7 +1,7 @@
 {
-  "resourceName": "bucket",
-  "policyUUID": "dc54f220",
-  "bucketName": "harshas3bucket",
+  "resourceName": "smarthomeservice",
+  "policyUUID": "11801693",
+  "bucketName": "smarthomeservice",
   "storageAccess": "authAndGuest",
   "guestAccess": [
     "CREATE_AND_UPDATE",

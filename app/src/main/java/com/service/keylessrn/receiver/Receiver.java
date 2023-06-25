@@ -15,6 +15,7 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.service.keylessrn.worker.BackgroundLoopWorker;
 import com.service.keylessrn.worker.BackgroundOneTimeWorker;
 import com.service.keylessrn.worker.BackgroundPeriodicWorker;
 import com.service.keylessrn.utility.Constants;
@@ -38,9 +39,11 @@ public class Receiver extends BroadcastReceiver {
 
                     if (dpm.isDeviceOwnerApp(this.context.getPackageName())) {
                         ComponentName admin = new ComponentName(this.context, DeviceAdminReceiver.class);
-                        dpm.setLockTaskPackages(admin, new String[]{Constants.CLIENT_APP_PACKAGE});
+                        dpm.setLockTaskPackages(admin, new String[]{Constants.CLIENT_APP_PACKAGE, Constants.LAUNCHER_APP_PACKAGE});
                         Intent successIntent = new Intent(Constants.ACTION_ENABLE_LOCK_MODE_SUCCESS);
                         successIntent.setComponent(new ComponentName(Constants.CLIENT_APP_PACKAGE, Constants.CLIENT_APP_RECEIVER_CLASS));
+                        this.context.sendBroadcast(successIntent);
+                        successIntent.setComponent(new ComponentName(Constants.LAUNCHER_APP_PACKAGE, Constants.LAUNCHER_APP_RECEIVER_CLASS));
                         this.context.sendBroadcast(successIntent);
                     } else {
                         Log.i(Constants.TAG, "App is not an owner");
@@ -95,14 +98,15 @@ public class Receiver extends BroadcastReceiver {
             case Intent.ACTION_LOCKED_BOOT_COMPLETED:
                 launchClientApp();
                 startBackgroundOneTimeWorker();
-                startBackgroundPeriodicWorker();
+                startBackgroundLoopWorker();
+                // startBackgroundPeriodicWorker();
                 break;
         }
     }
 
-    private void launchClientApp(){
+    private void launchClientApp() {
         Intent launchIntent = this.context.getPackageManager().getLaunchIntentForPackage(Constants.CLIENT_APP_PACKAGE);
-        if(launchIntent == null){
+        if (launchIntent == null) {
             Log.i(Constants.TAG, "App not installed, cannot launch app");
         }
         if (launchIntent != null) {
@@ -121,6 +125,15 @@ public class Receiver extends BroadcastReceiver {
                         .build();
 
         WorkManager.getInstance(this.context).enqueueUniqueWork(workTag, ExistingWorkPolicy.KEEP, workRequest);
+    }
+
+    private void startBackgroundLoopWorker() {
+        String workTag = this.context.getPackageName() + ".loop";
+        OneTimeWorkRequest workRequest =
+                new OneTimeWorkRequest.Builder(BackgroundLoopWorker.class)
+                        .build();
+
+        WorkManager.getInstance(this.context).enqueueUniqueWork(workTag, ExistingWorkPolicy.REPLACE, workRequest);
     }
 
     private void startBackgroundPeriodicWorker() {

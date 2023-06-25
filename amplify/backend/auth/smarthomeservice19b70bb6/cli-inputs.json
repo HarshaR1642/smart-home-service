@@ -1,10 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "identityPoolName": "smarthomeserviceed54d906_identitypool_ed54d906",
+    "identityPoolName": "smarthomeservice19b70bb6_identitypool_19b70bb6",
     "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "smarthed54d906",
-    "userPoolName": "smarthomeserviceed54d906_userpool_ed54d906",
+    "resourceNameTruncated": "smarth19b70bb6",
+    "userPoolName": "smarthomeservice19b70bb6_userpool_19b70bb6",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -31,10 +31,10 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "smarthed54d906_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "smarth19b70bb6_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "ed54d906",
-    "resourceName": "smarthomeserviceed54d906",
+    "sharedId": "19b70bb6",
+    "resourceName": "smarthomeservice19b70bb6",
     "authSelections": "identityPoolAndUserPool",
     "useDefault": "default",
     "userPoolGroupList": [],

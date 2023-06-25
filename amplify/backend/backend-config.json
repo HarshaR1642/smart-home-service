@@ -1,6 +1,6 @@
 {
   "auth": {
-    "smarthomeserviceed54d906": {
+    "smarthomeservice19b70bb6": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -26,7 +26,7 @@
     }
   },
   "storage": {
-    "bucket": {
+    "smarthomeservice": {
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
       "service": "S3"
